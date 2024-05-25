@@ -37,8 +37,22 @@ function App() {
    * to re render every time the roll dice
    * button is clicked
   */
+  /**
+ * Challenge: Update the `rollDice` function to not just roll
+ * all new dice, but instead to look through the existing dice
+ * to NOT role any that are being `held`.
+ *
+ * Hint: this will look relatively similiar to the `holdDice`
+ * function below. When creating new dice, remember to use
+ * `id: nanoid()` so any new dice have an `id` as well.
+ */
   function handleDiceRoll() {
-    setDice(allNewDice())
+    setDice(prevDice =>
+      prevDice.map(dice => dice.isHeld ? {...dice, id: nanoid()} : allNewDice())
+    )
+
+    // dice => dice.isHeld ? {...dice, id: nanoid()} : allNewDice()
+    // setDice(allNewDice())
   }
   /**
    *  function `holdDice` that takes
@@ -46,10 +60,15 @@ function App() {
    * Then, figure out how to pass that function down to each
    * instance of the Die component so when each one is clicked,
    * it logs its own unique ID property.
-   *
+   * flip the `isHeld` property on the object in the array
+   * that was clicked, based on the `id` prop passed
   */
   function holdDice(id) {
-    console.log("This is the unique ID: ", id)
+    setDice(prevDice =>
+      prevDice.map(dice =>
+        dice.id === id ? {...dice, isHeld: !dice.isHeld} : dice
+      )
+    )
   }
   /**
    * This is the diceElement
