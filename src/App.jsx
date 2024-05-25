@@ -25,7 +25,7 @@ function App() {
         {
           value: Math.ceil(Math.random() * 6),
           isHeld: false,
-          id: nanoid()
+          id: nanoid(),
         }
       )
     }
@@ -41,13 +41,29 @@ function App() {
     setDice(allNewDice())
   }
   /**
+   *  function `holdDice` that takes
+   * `id` as a parameter and console.log(id)
+   * Then, figure out how to pass that function down to each
+   * instance of the Die component so when each one is clicked,
+   * it logs its own unique ID property.
+   *
+  */
+  function holdDice(id) {
+    console.log("This is the unique ID: ", id)
+  }
+  /**
    * This is the diceElement
    * in order to render inside the
    * dice container
    */
-  const diceElement = dice.map((die) => {
-     return <Die key={die.id} isHeld={die.isHeld} value={die.value} />
-  })
+  const diceElement = dice.map((die) => (
+    <Die
+      key={die.id}
+      isHeld={die.isHeld}
+      holdDice ={() => holdDice(die.id)}
+      value={die.value}
+    />
+  ))
 
   return (
     <main>
