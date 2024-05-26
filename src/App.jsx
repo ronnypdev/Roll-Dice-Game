@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
 import Die from "./Die"
 import './App.css'
@@ -10,6 +10,7 @@ function App() {
    * loads all new dice as soon as the app loads)
   */
   const [dice, setDice] = useState(allNewDice())
+  const [tenzies, setTenzies] = useState(false)
   /**
    * allNewDice() function
    * which generates number from 1 to 6
@@ -35,20 +36,11 @@ function App() {
    * handleDiceRoll() function
    * which triggers the dice
    * to re render every time the roll dice
-   * button is clicked
+   * button is clicked and also rolls the dice that are not being held
   */
-  /**
- * Challenge: Update the `rollDice` function to not just roll
- * all new dice, but instead to look through the existing dice
- * to NOT role any that are being `held`.
- *
- * Hint: this will look relatively similiar to the `holdDice`
- * function below. When creating new dice, remember to use
- * `id: nanoid()` so any new dice have an `id` as well.
- */
   function handleDiceRoll() {
     setDice(prevDice =>
-      prevDice.map(dice => dice.isHeld ? {...dice, id: nanoid()} : allNewDice())
+      prevDice.map(dice => dice.isHeld ? dice : { ...dice, id: nanoid(), value: Math.floor(Math.random() * 6) + 1 })
     )
 
     // dice => dice.isHeld ? {...dice, id: nanoid()} : allNewDice()
@@ -70,6 +62,10 @@ function App() {
       )
     )
   }
+
+  useEffect(() => {
+    console.log("Dice state changed")
+  }, [dice])
   /**
    * This is the diceElement
    * in order to render inside the
@@ -86,6 +82,10 @@ function App() {
 
   return (
     <main>
+      <h1 className="title">Tenzies</h1>
+      <p className="instructions">
+        Roll until all dice are the same. Click each die to freeze it at its current value between rolls.
+      </p>
       <div className="dice-container">
         {diceElement}
       </div>
