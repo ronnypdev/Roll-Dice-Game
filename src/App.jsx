@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { nanoid } from 'nanoid'
+import Confetti from 'react-confetti'
 import Die from "./Die"
 import './App.css'
 
@@ -32,6 +33,19 @@ function App() {
     }
     return newDice
   }
+    useEffect(() => {
+    // All dice are held, and
+    const allHeld = dice.every(die => die.isHeld)
+    // Get the first die value
+    const firstValue = dice[0].value
+    // All dice have the same value
+    const allSameValue = dice.every(die => die.value === firstValue)
+    // If both conditions are true, set `tenzies` to true and log
+    // "You won!" to the console
+    if (allHeld && allSameValue) {
+      setTenzies(prevTenzies => !prevTenzies)
+    }
+  }, [dice])
   /**
    * handleDiceRoll() function
    * which triggers the dice
@@ -39,9 +53,14 @@ function App() {
    * button is clicked and also rolls the dice that are not being held
   */
   function handleDiceRoll() {
-    setDice(prevDice =>
-      prevDice.map(dice => dice.isHeld ? dice : { ...dice, id: nanoid(), value: Math.floor(Math.random() * 6) + 1 })
-    )
+    if (!tenzies) {
+      setDice(prevDice =>
+        prevDice.map(dice => dice.isHeld ? dice : { ...dice, id: nanoid(), value: Math.floor(Math.random() * 6) + 1 })
+      )
+    }else {
+      setTenzies(false)
+      setDice(allNewDice())
+    }
   }
   /**
    *  function `holdDice` that takes
@@ -59,21 +78,6 @@ function App() {
       )
     )
   }
-
-  useEffect(() => {
-    // All dice are held, and
-    const allHeld = dice.every(die => die.isHeld)
-    // Get the first die value
-    const firstValue = dice[0].value
-    // All dice have the same value
-    const allSameValue = dice.every(die => die.value === firstValue)
-    // If both conditions are true, set `tenzies` to true and log
-    // "You won!" to the console
-    if (allHeld && allSameValue) {
-      setTenzies(prevTenzies => !prevTenzies)
-      console.log("you won")
-    }
-  }, [dice])
   /**
    * This is the diceElement
    * in order to render inside the
@@ -90,6 +94,7 @@ function App() {
 
   return (
     <main>
+      {tenzies  && <Confetti />}
       <h1 className="title">Tenzies</h1>
       <p className="instructions">
         Roll until all dice are the same. Click each die to freeze it at its current value between rolls.
@@ -97,7 +102,7 @@ function App() {
       <div className="dice-container">
         {diceElement}
       </div>
-      <button className="roll-dice" onClick={handleDiceRoll}>Roll</button>
+      <button className="roll-dice" onClick={handleDiceRoll}>{tenzies ? "New Game" : "Roll"}</button>
     </main>
   )
 }
