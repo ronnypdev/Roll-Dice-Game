@@ -42,9 +42,6 @@ function App() {
     setDice(prevDice =>
       prevDice.map(dice => dice.isHeld ? dice : { ...dice, id: nanoid(), value: Math.floor(Math.random() * 6) + 1 })
     )
-
-    // dice => dice.isHeld ? {...dice, id: nanoid()} : allNewDice()
-    // setDice(allNewDice())
   }
   /**
    *  function `holdDice` that takes
@@ -64,7 +61,18 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("Dice state changed")
+    // All dice are held, and
+    const allHeld = dice.every(die => die.isHeld)
+    // Get the first die value
+    const firstValue = dice[0].value
+    // All dice have the same value
+    const allSameValue = dice.every(die => die.value === firstValue)
+    // If both conditions are true, set `tenzies` to true and log
+    // "You won!" to the console
+    if (allHeld && allSameValue) {
+      setTenzies(prevTenzies => !prevTenzies)
+      console.log("you won")
+    }
   }, [dice])
   /**
    * This is the diceElement
