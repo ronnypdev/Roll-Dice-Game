@@ -12,6 +12,7 @@ function App() {
   */
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
+  const [diceRollCount, setDiceRollCount] = useState(0)
   /**
    * allNewDice() function
    * which generates number from 1 to 6
@@ -53,12 +54,14 @@ function App() {
    * button is clicked and also rolls the dice that are not being held
   */
   function handleDiceRoll() {
+    setDiceRollCount(diceRollCount + 1)
     if (!tenzies) {
       setDice(prevDice =>
         prevDice.map(dice => dice.isHeld ? dice : { ...dice, id: nanoid(), value: Math.floor(Math.random() * 6) + 1 })
       )
     }else {
       setTenzies(false)
+      setDiceRollCount(0)
       setDice(allNewDice())
     }
   }
@@ -101,6 +104,18 @@ function App() {
       </p>
       <div className="dice-container">
         {diceElement}
+      </div>
+
+      <div className="dice-information-container">
+        <div className="counter">
+          <p><span className="emoji">🎲</span>Dice Rolls Attempts: {diceRollCount}</p>
+        </div>
+        <div className="timer">
+          <p><span className="emoji">⌛</span>Timer: 01:23:52</p>
+        </div>
+        <div className="record">
+          <p><span className="emoji">🏆</span>Best Attempts Record: 34</p>
+        </div>
       </div>
       <button className="roll-dice" onClick={handleDiceRoll}>{tenzies ? "New Game" : "Roll"}</button>
     </main>
