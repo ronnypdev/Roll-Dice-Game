@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { nanoid } from 'nanoid'
 import Confetti from 'react-confetti'
 import Die from "./Die"
@@ -13,6 +13,9 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
+  const [timer, setTimer] = useState(0)
+  const [timeRunning, setTimeRunning] = useState(true)
+  const timeRef = useRef(0)
   /**
    * allNewDice() function
    * which generates number from 1 to 6
@@ -34,7 +37,36 @@ function App() {
     }
     return newDice
   }
-    useEffect(() => {
+  /**
+   * This useEffect starts the timer
+   * as soon as the component is render
+  */
+  useEffect(() => {
+    if (timeRunning) {
+      timeRef.current = setInterval(() => {
+        setTimer(preTimer => preTimer + 1)
+      }, 1);
+    }
+  }, [timeRunning])
+
+  /**
+   * function formatTimer
+   * @param {time} time
+   * @returns formats the timers time to
+   * 00:00:00(hours, minutes, seconds)
+   */
+  function formatTimer(time) {
+    const hours = Math.floor(time / (1000 * 60 * 60))
+    const minutes = Math.floor((time / 1000 / 60) % 60)
+    const seconds = Math.floor((time / 1000) % 60)
+
+    //format the timer to 00:00:00(hours, minutes, seconds)
+    return `${hours.toString().padStart(2, "0")}:${minutes
+      .toString()
+      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  useEffect(() => {
     // All dice are held, and
     const allHeld = dice.every(die => die.isHeld)
     // Get the first die value
@@ -45,6 +77,7 @@ function App() {
     // "You won!" to the console
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
+      setTimeRunning(false)
     }
   }, [dice])
   /**
@@ -62,6 +95,7 @@ function App() {
     }else {
       setTenzies(false)
       setDiceRollCount(0)
+      setTimer(0)
       setDice(allNewDice())
     }
   }
@@ -111,7 +145,7 @@ function App() {
           <p><span className="emoji">🎲</span>Dice Rolls Attempts: {diceRollCount}</p>
         </div>
         <div className="timer">
-          <p><span className="emoji">⌛</span>Timer: 01:23:52</p>
+          <p><span className="emoji">⌛</span>Timer: {formatTimer(timer)}</p>
         </div>
         <div className="record">
           <p><span className="emoji">🏆</span>Best Attempts Record: 34</p>
