@@ -13,6 +13,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
+  const [attempts, setAttempts] = useState(JSON.parse(localStorage.getItem("diceRollCount")))
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -37,6 +38,14 @@ function App() {
     }
     return newDice
   }
+  /**
+   * This useEffect keeps track of
+   * the best dice roll count
+  */
+  useEffect(() => {
+    localStorage.setItem("diceRollCount", JSON.stringify(diceRollCount))
+  }, [diceRollCount])
+
   /**
    * This useEffect starts the timer
    * as soon as the component is render
@@ -77,7 +86,7 @@ function App() {
     // "You won!" to the console
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
-      setTimeRunning(false)
+      setTimeRunning(prevTimeRunning => !prevTimeRunning)
     }
   }, [dice])
   /**
@@ -148,7 +157,7 @@ function App() {
           <p><span className="emoji">⌛</span>Timer: {formatTimer(timer)}</p>
         </div>
         <div className="record">
-          <p><span className="emoji">🏆</span>Best Attempts Record: 34</p>
+          <p><span className="emoji">🏆</span>Best Attempts Record: {attempts}</p>
         </div>
       </div>
       <button className="roll-dice" onClick={handleDiceRoll}>{tenzies ? "New Game" : "Roll"}</button>
