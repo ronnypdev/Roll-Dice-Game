@@ -13,7 +13,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [attempts, setAttempts] = useState(JSON.parse(localStorage.getItem("diceRollCount")))
+  const [score, setScore] = useState()
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -43,7 +43,9 @@ function App() {
    * the best dice roll count
   */
   useEffect(() => {
-    localStorage.setItem("diceRollCount", JSON.stringify(diceRollCount))
+    if (diceRollCount) {
+      localStorage.setItem("rollCount", JSON.stringify(diceRollCount))
+    }
   }, [diceRollCount])
 
   /**
@@ -84,8 +86,10 @@ function App() {
     const allSameValue = dice.every(die => die.value === firstValue)
     // If both conditions are true, set `tenzies` to true and log
     // "You won!" to the console
+    const currentScore = JSON.parse(localStorage.getItem("rollCount"))
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
+      setScore(currentScore)
       setTimeRunning(prevTimeRunning => !prevTimeRunning)
     }
   }, [dice])
@@ -157,7 +161,7 @@ function App() {
           <p><span className="emoji">⌛</span>Timer: {formatTimer(timer)}</p>
         </div>
         <div className="record">
-          <p><span className="emoji">🏆</span>Best Attempts Record: {attempts}</p>
+          <p><span className="emoji">🏆</span>Best Attempts Record: {score}</p>
         </div>
       </div>
       <button className="roll-dice" onClick={handleDiceRoll}>{tenzies ? "New Game" : "Roll"}</button>
