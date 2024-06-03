@@ -13,7 +13,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [score, setScore] = useState()
+  const [score, setScore] = useState(JSON.parse(localStorage.getItem("rollCount")))
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -77,6 +77,10 @@ function App() {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
+  function updateScore() {
+    setScore(score => score)
+  }
+
   useEffect(() => {
     // All dice are held, and
     const allHeld = dice.every(die => die.isHeld)
@@ -86,10 +90,9 @@ function App() {
     const allSameValue = dice.every(die => die.value === firstValue)
     // If both conditions are true, set `tenzies` to true and log
     // "You won!" to the console
-    const currentScore = JSON.parse(localStorage.getItem("rollCount"))
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
-      setScore(currentScore)
+      updateScore()
       setTimeRunning(prevTimeRunning => !prevTimeRunning)
     }
   }, [dice])
