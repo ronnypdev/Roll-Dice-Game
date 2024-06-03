@@ -13,7 +13,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [score, setScore] = useState(JSON.parse(localStorage.getItem("rollCount")) || 0)
+  const [score, setScore] = useState(() => JSON.parse(localStorage.getItem("rollCount")) || 0)
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -55,8 +55,11 @@ function App() {
   useEffect(() => {
     if (timeRunning) {
       timeRef.current = setInterval(() => {
-        setTimer(preTimer => preTimer + 1)
-      }, 1);
+        setTimer(preTimer => preTimer + 10)
+      }, 10);
+    }
+    return () => {
+      clearInterval(timeRef.current)
     }
   }, [timeRunning])
 
