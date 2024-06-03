@@ -13,7 +13,10 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [score, setScore] = useState(() => JSON.parse(localStorage.getItem("rollCount")) || 0)
+  const [score, setScore] = useState(() => {
+    const savedScore = localStorage.getItem("rollCount")
+    return savedScore ? JSON.parse(savedScore) : 0
+  })
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
