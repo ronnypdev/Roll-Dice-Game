@@ -17,6 +17,7 @@ function App() {
     const savedScore = localStorage.getItem("rollCount")
     return savedScore ? JSON.parse(savedScore) : 0
   })
+  const [bestScore, setBestScore] = useState(0)
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
