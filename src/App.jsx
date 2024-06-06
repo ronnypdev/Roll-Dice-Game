@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import useLocalStorage from './hooks/useLocalStorage'
 import { nanoid } from 'nanoid'
 import Confetti from 'react-confetti'
 import Die from "./Die"
@@ -13,11 +14,8 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [score, setScore] = useState(() => {
-    const savedScore = localStorage.getItem("rollCount")
-    return savedScore ? JSON.parse(savedScore) : 0
-  })
-  const [bestScore, setBestScore] = useState(0)
+  const [initiaLscore, setinitiaLScore] = useLocalStorage("initiaLscore", 0)
+  const [bestScore, setBestScore] = useLocalStorage("bestScore", 0)
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -43,16 +41,6 @@ function App() {
     return newDice
   }
   /**
-   * This useEffect keeps track of
-   * the best dice roll count
-  */
-  useEffect(() => {
-    if (diceRollCount) {
-      localStorage.setItem("rollCount", JSON.stringify(diceRollCount))
-    }
-  }, [diceRollCount])
-
-  /**
    * This useEffect starts the timer
    * as soon as the component is render
   */
@@ -66,7 +54,6 @@ function App() {
       clearInterval(timeRef.current)
     }
   }, [timeRunning])
-
   /**
    * function formatTimer
    * @param {time} time
@@ -84,10 +71,6 @@ function App() {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
-  function updateScore() {
-    setScore(JSON.parse(localStorage.getItem("rollCount")))
-  }
-
   useEffect(() => {
     // All dice are held, and
     const allHeld = dice.every(die => die.isHeld)
@@ -100,7 +83,6 @@ function App() {
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
       setTimeRunning(false)
-      updateScore()
     }
   }, [dice])
   /**
@@ -165,13 +147,13 @@ function App() {
 
       <div className="dice-information-container">
         <div className="counter">
-          <p><span className="emoji">🎲</span>Dice Rolls Attempts: {diceRollCount}</p>
+          <p><span className="emoji">🎲</span>Dice Rolls Attempts: {initiaLscore}</p>
         </div>
         <div className="timer">
           <p><span className="emoji">⌛</span>Timer: {formatTimer(timer)}</p>
         </div>
         <div className="record">
-          <p><span className="emoji">🏆</span>Best Attempts Record: {score}</p>
+          <p><span className="emoji">🏆</span>Best Attempts Record: {bestScore}</p>
         </div>
       </div>
       <button className="roll-dice" onClick={handleDiceRoll}>{tenzies ? "New Game" : "Roll"}</button>
