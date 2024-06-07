@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useMemo } from 'react'
 import useLocalStorage from './hooks/useLocalStorage'
 import { nanoid } from 'nanoid'
 import Confetti from 'react-confetti'
@@ -14,7 +14,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [initiaLscore, setinitiaLScore] = useLocalStorage("initiaLscore", 0)
+  // const [initiaLscore, setinitiaLScore] = useLocalStorage("initiaLscore", 0)
   const [bestScore, setBestScore] = useLocalStorage("bestScore", 0)
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
@@ -71,6 +71,14 @@ function App() {
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
 
+  function getBestScore() {
+    if (bestScore || diceRollCount > bestScore) {
+      setBestScore(diceRollCount)
+      localStorage.setItem('bestScore', JSON.stringify(diceRollCount))
+    }
+  }
+
+
   useEffect(() => {
     // All dice are held, and
     const allHeld = dice.every(die => die.isHeld)
@@ -83,6 +91,7 @@ function App() {
     if (allHeld && allSameValue) {
       setTenzies(prevTenzies => !prevTenzies)
       setTimeRunning(false)
+      getBestScore()
     }
   }, [dice])
   /**
@@ -147,7 +156,7 @@ function App() {
 
       <div className="dice-information-container">
         <div className="counter">
-          <p><span className="emoji">🎲</span>Dice Rolls Attempts: {initiaLscore}</p>
+          <p><span className="emoji">🎲</span>Dice Rolls Attempts: {diceRollCount}</p>
         </div>
         <div className="timer">
           <p><span className="emoji">⌛</span>Timer: {formatTimer(timer)}</p>
