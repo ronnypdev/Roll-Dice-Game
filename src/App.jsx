@@ -14,7 +14,7 @@ function App() {
   const [dice, setDice] = useState(allNewDice())
   const [tenzies, setTenzies] = useState(false)
   const [diceRollCount, setDiceRollCount] = useState(0)
-  const [bestScore, setBestScore] = useLocalStorage("bestScore", 0)
+  const [bestScore, setBestScore] = useLocalStorage("bestScore", null)
   const [timer, setTimer] = useState(0)
   const [timeRunning, setTimeRunning] = useState(true)
   const timeRef = useRef(0)
@@ -71,7 +71,7 @@ function App() {
   }
 
   function getBestScore() {
-    if (diceRollCount < bestScore) {
+    if (bestScore === null || diceRollCount < bestScore) {
       setBestScore(diceRollCount)
       localStorage.setItem('bestScore', JSON.stringify(diceRollCount))
     }
