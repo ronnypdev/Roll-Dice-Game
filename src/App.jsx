@@ -109,6 +109,7 @@ function App() {
       setTenzies(false)
       setDiceRollCount(0)
       setTimer(0)
+      setTimeRunning(true)
       setDice(allNewDice())
     }
   }
