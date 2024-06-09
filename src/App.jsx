@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import useLocalStorage from './hooks/useLocalStorage'
 import { nanoid } from 'nanoid'
 import Confetti from 'react-confetti'
@@ -69,14 +69,21 @@ function App() {
       .toString()
       .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   }
-
+  /**
+   * function getBestScore
+   * @param {} 
+   * get the best score if and when
+   * bestScore is equal to nothing(null)
+   * have not yet been set
+   * or(||) when the diceRollCount is less than or equal to the bestScore
+   * 00:00:00(hours, minutes, seconds)
+  */
   function getBestScore() {
-    if (bestScore === null || diceRollCount < bestScore) {
+    if (bestScore === null || diceRollCount <= bestScore) {
       setBestScore(diceRollCount)
       localStorage.setItem('bestScore', JSON.stringify(diceRollCount))
     }
   }
-
 
   useEffect(() => {
     // All dice are held, and
