@@ -6,7 +6,13 @@ export default function Die(props) {
 
   return (
       <div className="die-face" style={dieColor} onClick={props.holdDice}>
-          <h2 className="die-num">{props.value}</h2>
+      {/* <h2 className="die-num">{props.value}</h2> */}
+        <span className="pip"></span>
+          {/* <span className="pip"></span>
+          <span className="pip"></span>
+          <span className="pip"></span>
+          <span className="pip"></span>
+          <span className="pip"></span> */}
       </div>
   )
 }
