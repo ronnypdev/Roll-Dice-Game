@@ -71,7 +71,7 @@ function App() {
   }
   /**
    * function getBestScore
-   * @param {} 
+   * @param {}
    * get the best score if and when
    * bestScore is equal to nothing(null)
    * have not yet been set
